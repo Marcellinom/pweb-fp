@@ -1,7 +1,3 @@
-<?php
-session_start();
-include "is_admin.php";
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +6,6 @@ include "is_admin.php";
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     
@@ -32,7 +27,7 @@ include "is_admin.php";
         .card-img-top {
             object-fit: cover;
             width: 100%;
-            height: 20vw;
+            height: 100%;
         }
 
         .footer {
@@ -133,7 +128,6 @@ include "is_admin.php";
         }
     </style>
 </head>
-
 <body body background="" style="background-size: 2560px 1440px; background-position-x: center; font-family: Verdana, sans-serif; background-color: #141414;">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark" style="display: flex; justify-content: center;">
         <a class="navbar-brand" href="admin.php" style="">
@@ -162,74 +156,92 @@ include "is_admin.php";
     </nav>
     <br>
     <div class="container">
-    <div class="row">
-    <?php
-        $files = scandir("bukti_bayar");
-        include "connect.php";
-        foreach ($files as $file) {
-            if ($file == "." || $file == "..") continue;
-            $id = explode(".", $file)[0];
-            // fetch user data using id
-            $result = mysqli_query($conn, "SELECT * FROM user WHERE id=$id");
-            $row = mysqli_fetch_array($result);
-            $result2 = mysqli_query($conn, "SELECT SUM(g.harga) as total FROM games g JOIN usercart uc WHERE uc.id_game = g.id_game
-            AND uc.id_user = $id AND uc.status = 2");
-            $row2 = mysqli_fetch_array($result2);
-            // get total price
-            $total = $row2['total'];
-            // get name
-            $name = $row['username'];
-            echo " <div class='col-lg-4 col-md-6 col-sm-6 col-6' id=$id>
-            <a href='verifikasi_detail.php?id=$id'>
-                <div class='card card-1 bg-dark justify-content-center'>        
-                <img src=bukti_bayar/$file class='card-img-top'>
-                        <div class='card-body text-white'>     
-                                <h5><b>$name</b></h5>
-                        </div>
-
-                        <div class='footer text-right text-white' style='margin-right: 10px; margin-bottom: 10px;'>
-                        <h6>IDR $total</h6>
-                    </div>
-                </div>
-                <br>
-                </a>
-            ";   
-        }
-    ?>
-    </div>
-    </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript">
-        $("#submita").click(function() {
-
-            var nama = $("#gamename").val();
-            var genre = $("#gamegenre").val();
-            var deskripsi = $("#gamedesc").val();
-            var developer = $("#gamedev").val();
-            var tanggal_release = $("#releasedate").val();
-            var harga = $("#price").val();
-
-
-            $.ajax({
-                type: "POST",
-                url: "insertdb.php",
-                data: {
-                    nama: nama,
-                    genre: genre,
-                    deskripsi: deskripsi,
-                    developer: developer,
-                    tanggal_release: tanggal_release,
-                    harga: harga
+        <div class="row">
+            <style>
+                #outer
+                {
+                    width:100%;
+                    text-align: center;
                 }
-            }).done(function(res) {}).fail(function(e) {});
+                .inner
+                {
+                    display: inline-block;
+                }
+            </style>
+        <?php
+                    require_once "connect.php";
 
-        });
+                    $id = $_GET['id'];
+
+                    $sql = "SELECT * FROM usercart uc JOIN games g WHERE g.id_game = uc.id_game
+                    and uc.id_user = $id AND uc.STATUS = 2";
+                    $result = $conn->query($sql);
+                    $list = "<table style='style='width=650vw';'>";
+                    $total = 0;
+                    foreach ($result as $row) {
+                        $harga = "Free";
+                        if ($row['harga'] !== "Free") {
+                            $total += (int)$row['harga']; 
+                            $harga = "IDR ".number_format((int)$row['harga'], 0, ',', '.');
+                        } 
+                        $list .= "<tr>";
+                        $list .= "<td><h5>" . $row['nama'] . "</h5></td>";
+                        $list .= "<td><h5>" . $harga . "</h5></td>";
+                        $list .= "</tr>";
+                    }
+                    $total = "IDR ".number_format($total, 0, ',', '.');
+                    $list .= "<tr>";
+                    $list .= "<td><h5>Total</h5></td>";
+                    $list .= "<td><h5>" . $total . "</h5></td>";
+                    $list .= "</tr>";
+                    $list .= "</table>";
+
+                    echo"
+                    <div class=col-lg-12 col-md-12 col-sm-12 col-12>
+                        <div class=card-dark>
+                            <img class=card-img-top src='bukti_bayar/$id.jpg'>
+                            <div id='outer'>
+                                <div class='inner'>
+                                    <button class='btn btn-danger' onclick='action(0, $id)'>Decline</button>
+                                </div>
+                                <div class='inner'>
+                                    <button class='btn btn-success' onclick='action(1, $id)'>Approve</button>
+                                </div>
+                            </div>
+    
+                            <br>
+                            <br>
+    
+                            <div style=color: white;>
+                                <hr class=solid>
+                                $list
+                            </div>
+    
+                            <div class=card-dark>
+                            <hr class=solid>
+                            </div>
+                        </div>
+                 </div>";
+                ?>
+        </div>
+    </div>
+    <script>
+        function action(approved, user_id) {
+            $.ajax({
+                url: "verifikasi_action.php",
+                type: "POST",
+                data: {
+                    id: user_id,
+                    approved: approved ? 0 : 1
+                },
+                success: function (data) {
+                    window.location.href = "verifikasi.php";
+                }
+            });
+        }
     </script>
-
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-</body>
 
+</body>
 </html>
