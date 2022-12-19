@@ -46,7 +46,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
        
     <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="">
-            <a class="navbar-brand" href="Opening.html" style="">
+            <a class="navbar-brand" href="Home.php" style="">
                 <img src="stunt_logo.png" alt="logo" width="48" height="48" style="margin-left: 5px;">
                 <img src="stunt_text.png" alt="text-logo" width="120" height="36" style="">
             </a>
@@ -96,12 +96,28 @@
 
                     $userId = $_SESSION["id"];
 
+                    $querry = "SELECT * FROM usercart WHERE id_user = $userId AND status = 0";
+                                
+                    $result = mysqli_query($conn,$querry);
+                
+                    $purchasedGame = array();
+                    while($row_game = mysqli_fetch_assoc($result))
+                    {
+                        array_push($purchasedGame,$row_game['id_game']);
+                    }
+
+                    $jenis_button = in_array($id,$purchasedGame) 
+                        ? "<button class='btn btn-success btn-block'>Added To Cart</button>" 
+                        : "<button type=button class='btn btn-outline-primary btn-block' onclick='AddToCart($userId,$id)' id='cartbutton'>
+                            <img src=cart.png width=16 height=16> Add To Cart
+                            </button>";
+
                     echo"<h1 style=color: white; margin-bottom: 3%;>{$row['nama']}</h1>
                     <div class=col-lg-12 col-md-12 col-sm-12 col-12>
                         <div class=card-dark>
                             <img class=card-img-top src='pictures/$src.jpg'>
                             <div class=mt-3 style='color: white;' id='buttonplace'>
-                                <button type=button class='btn btn-outline-primary btn-block' onclick='AddToCart($userId,$id)' id='cartbutton'><img src=cart.png width=16 height=16> Add To Cart</button>
+                                $jenis_button
                             </div>
                             <h5 class=mt-3 style='float: left;'>{$row['harga']}</h5>
     

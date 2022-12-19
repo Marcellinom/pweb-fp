@@ -103,7 +103,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 </head>
 <body background="background2.jpg" style="background-size: 2560px 1440px; background-position-x: center;">
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark" style="display: flex; justify-content: center;">
-            <a class="navbar-brand" href="Opening.html" style="">
+            <a class="navbar-brand" href="Home.php" style="">
             <img src="stunt_logo.png" alt="logo" width="48" height="48" style="margin-left: 10px;">
             <img src="stunt_text.png" alt="text-logo" width="120" height="36" style="">
         </a>

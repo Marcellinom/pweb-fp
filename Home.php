@@ -1,3 +1,9 @@
+<?php
+    session_start();
+    if (!isset($_SESSION["username"])) {
+        header("Location: login.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,7 +77,7 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         
         <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="">
-            <a class="navbar-brand" href="Opening.html" style="">
+            <a class="navbar-brand" href="Home.php" style="">
                 <img src="stunt_logo.png" alt="logo" width="48" height="48" style="margin-left: 5px;">
                 <img src="stunt_text.png" alt="text-logo" width="120" height="36" style="">
             </a>
@@ -82,7 +88,7 @@
             <div class="collapse navbar-collapse" id="navbarDropdown">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" style="text-align: center; color: white;">Hello,<?php session_start(); echo $_SESSION["username"];?><a>
+                        <a class="nav-link" style="text-align: center; color: white;">Hello,<?php echo $_SESSION["username"];?><a>
                     </li>
 
                     <li class="nav-item">
@@ -115,13 +121,13 @@
             <!-- The slideshow -->
             <div class="carousel-inner" style="width:100%;">
                 <div class="carousel-item active">
-                <a href="register.php"><img src="pictures/Paladins.jpg" alt="pic1" width="1100" height="500"></a>
+                <a href="querypenampilgame.php?id=15"><img src="pictures/Paladins.jpg" alt="pic1" width="1100" height="500"></a>
                 </div>
                 <div class="carousel-item">
-                    <img src="pictures/GenshinImpact.jpg" alt="pic2" width="1100" height="500">
+                <a href="querypenampilgame.php?id=7"><img src="pictures/GenshinImpact.jpg" alt="pic2" width="1100" height="500">
                 </div>
                 <div class="carousel-item">
-                    <img src="pictures/DeadByDaylight.jpg" alt="pic3" width="1100" height="500">
+                <a href="querypenampilgame.php?id=5"><img src="pictures/DeadByDaylight.jpg" alt="pic3" width="1100" height="500">
                 </div>
             </div>
 
@@ -158,79 +164,35 @@
                 {
                     array_push($purchasedGame,$row['id_game']);
                 }
+                echo "<div class='col-lg-6 col-md-6 col-sm-6 col-6'>
+                <div class='card bg-dark'>
+                    <a href=querypenampilgame.php?id=13><img class=card-img-top src='pictures/Destiny2.jpg'>
+                    <div class=card-body>
+                        <h5><b>Destiny 2</b></h5>
+                        <h6 style=color: grey>Bungie</h6>
+                        <h6>FPS</h6> 
 
-                if(in_array("13",$purchasedGame))
-                {
-                    echo  "<div class='col-lg-6 col-md-6 col-sm-6 col-6'>
-                    <div class='card bg-dark'>
-                        <img class=card-img-top src='pictures/Destiny2.jpg'>
-                        <div class=card-body>
-                            <h5><b>Destiny 2</b></h5>
-                            <h6 style=color: grey>Bungie</h6>
-                            <h6>FPS</h6> 
-
-                            <h6 class=text-right>Free</h6> <!-- Query harga-->
-                            <h6 class='text-right'>Purchased</h6>
-                        </div>
-                        </a>
+                        <h6 class=text-right>Free</h6> <!-- Query harga-->
                     </div>
-                    <br>
-                    </div>";
-                }
+                    </a>
+                </div>
+                <br>
+                </div>";
+                echo "<div class='col-lg-6 col-md-6 col-sm-6 col-6'>
+                <div class='card bg-dark'>
+                    <a href=querypenampilgame.php?id=18><img class=card-img-top src='pictures/ResidentEvilVillage.jpg'>
+                    <div class=card-body>
+                        <h5><b>Resident Evil Village</b></h5>
+                        <h6 style=color: grey>Capcom</h6>
+                        <h6>Horror</h6> 
 
-                else
-                {
-                    echo "<div class='col-lg-6 col-md-6 col-sm-6 col-6'>
-                    <div class='card bg-dark'>
-                        <a href=querypenampilgame.php?id=13><img class=card-img-top src='pictures/Destiny2.jpg'>
-                        <div class=card-body>
-                            <h5><b>Destiny 2</b></h5>
-                            <h6 style=color: grey>Bungie</h6>
-                            <h6>FPS</h6> 
-
-                            <h6 class=text-right>Free</h6> <!-- Query harga-->
-                        </div>
-                        </a>
+                        <h6 class=text-right>IDR 200.000</h6>
+                        <h6 class=text-right>Purchased</h6> 
                     </div>
-                    <br>
-                    </div>";
-                }
-
-                if(in_array("15",$purchasedGame))
-                {
-                    echo "<div class='col-lg-6 col-md-6 col-sm-6 col-6'>
-                    <div class='card bg-dark'>
-                        <img class=card-img-top src='pictures/ResidentEvilVillage.jpg'>
-                        <div class=card-body>
-                            <h5><b>Resident Evil Village</b></h5>
-                            <h6 style=color: grey>Capcom</h6>
-                            <h6>Horror</h6> 
-
-                            <h6 class=text-right>IDR 845.000</h6>
-                            <h6 class=text-right>Purchased</h6> 
-                        </div>
-                        </a>
-                    </div>
-                    <br>
-                    </div>";
-                }
-                else
-                {
-                    echo "<div class='col-lg-6 col-md-6 col-sm-6 col-6'>
-                    <div class='card bg-dark'>
-                        <a href=querypenampilgame.php?id=15><img class=card-img-top src='pictures/ResidentEvilVillage.jpg'>
-                        <div class=card-body>
-                            <h5><b>Resident Evil Village</b></h5>
-                            <h6 style=color: grey>Capcom</h6>
-                            <h6>Horror</h6> 
-
-                            <h6 class=text-right>IDR 845.000</h6> <!-- Query harga-->
-                        </div>
-                        </a>
-                    </div>
-                    <br>
-                    </div>";
-                }
+                    </a>
+                </div>
+                <br>
+                </div>";
             ?>
             </div>
 
@@ -314,45 +276,24 @@
                          $hasil = $row['nama'];
                          $src = str_replace(' ','',$hasil);
                          $src = str_replace('-','',$src);
-                         
-                         if(in_array($row['id_game'],$purchasedGame))
-                         {
-                            echo"
+                
+                         $harga = $row['harga'] !== "Free" ? "IDR ".number_format($row['harga'], 0, ".", '.') : $row['harga'];
+                         echo"
                          <div class='col-lg-6 col-md-6 col-sm-6 col-6'>
                              <div class='card bg-dark'>
-                                 <img class=card-img-top src=pictures/$src.jpg>
+                                 <a href=querypenampilgame.php?id={$row['id_game']}> <img class=card-img-top src=pictures/$src.jpg> <!-- href ke halaman query detail game -->
+     
                                  <div class=card-body>
                                      <h5><b>{$row['nama']}</b></h5>
                                      <h6 style=color: grey>{$row['developer']}</h6>
-                                     <h6>{$row['genre']}</h6> 
+                                     <h6>{$row['genre']}</h6> <!-- Query genre disini-->
      
-                                     <h6 class=text-right>{$row['harga']}</h6> <!-- Query harga-->
-                                     <h6 class='text-right'>Purchased</h6>
+                                     <h6 class=text-right>$harga</h6> <!-- Query harga-->
                                  </div>
                                  </a>
                              </div>
                              <br>
                          </div>";
-                         }
-                         else
-                         {
-                            echo"
-                            <div class='col-lg-6 col-md-6 col-sm-6 col-6'>
-                                <div class='card bg-dark'>
-                                    <a href=querypenampilgame.php?id={$row['id_game']}> <img class=card-img-top src=pictures/$src.jpg> <!-- href ke halaman query detail game -->
-        
-                                    <div class=card-body>
-                                        <h5><b>{$row['nama']}</b></h5>
-                                        <h6 style=color: grey>{$row['developer']}</h6>
-                                        <h6>{$row['genre']}</h6> <!-- Query genre disini-->
-        
-                                        <h6 class=text-right>{$row['harga']}</h6> <!-- Query harga-->
-                                    </div>
-                                    </a>
-                                </div>
-                                <br>
-                            </div>";
-                         }
                      }
                      echo "</div>";
                      echo "</div>";
