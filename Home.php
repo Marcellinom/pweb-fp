@@ -1,3 +1,9 @@
+<?php
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+    header("Location: Opening.html");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -218,13 +224,13 @@
                 {
                     echo "<div class='col-lg-6 col-md-6 col-sm-6 col-6'>
                     <div class='card bg-dark'>
-                        <a href=querypenampilgame.php?id=15><img class=card-img-top src='pictures/ResidentEvilVillage.jpg'>
+                        <a href=querypenampilgame.php?id=18><img class=card-img-top src='pictures/ResidentEvilVillage.jpg'>
                         <div class=card-body>
                             <h5><b>Resident Evil Village</b></h5>
                             <h6 style=color: grey>Capcom</h6>
                             <h6>Horror</h6> 
 
-                            <h6 class=text-right>IDR 845.000</h6> <!-- Query harga-->
+                            <h6 class=text-right>IDR 200.000</h6> <!-- Query harga-->
                         </div>
                         </a>
                     </div>
