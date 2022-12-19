@@ -96,7 +96,7 @@
 
                     $userId = $_SESSION["id"];
 
-                    $querry = "SELECT * FROM usercart WHERE id_user = $userId AND status = 0";
+                    $querry = "SELECT * FROM usercart WHERE id_user = $userId AND status != 0";
                                 
                     $result = mysqli_query($conn,$querry);
                 

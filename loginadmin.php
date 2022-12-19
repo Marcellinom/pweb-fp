@@ -1,9 +1,9 @@
 <?php
 // Initialize the session
 session_start();
- 
+
 // Check if the user is already logged in, if yes then redirect him to welcome page
-if(isset($_SESSION["loggedinadmin"]) && $_SESSION["loggedinadmin"] === true) {
+if (isset($_SESSIOn['id'])) {
   header("location: admin.php");
   exit;
 }
@@ -36,7 +36,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($username_err) && empty($password_err)){
         // Prepare a select statement
         $password = md5($password);
-        $sql = "SELECT id_admin, username, password FROM 'admin' WHERE username = ? AND password = ?";
+        $sql = "SELECT id, username, password FROM user WHERE username = ? AND password = ?";
         
         if($stmt = mysqli_prepare($conn, $sql)){
             // Bind variables to the prepared statement as parameters

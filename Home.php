@@ -1,6 +1,6 @@
 <?php
     session_start();
-    if (!isset($_SESSION["username"])) {
+    if (!isset($_SESSION["id"])) {
         header("Location: login.php");
     }
 ?>
@@ -187,7 +187,6 @@
                         <h6>Horror</h6> 
 
                         <h6 class=text-right>IDR 200.000</h6>
-                        <h6 class=text-right>Purchased</h6> 
                     </div>
                     </a>
                 </div>

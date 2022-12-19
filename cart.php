@@ -132,6 +132,7 @@
             }
             echo "</div>";
     }
+    $modal_target = $result->num_rows ==0 ? "":"data-target='#myModal'";
     echo 
     "<div class='container d-flex justify-content-center'>
     <div class='row'>
@@ -145,7 +146,7 @@
             </div>
 
             <div class='card-footer'>
-                <button type='button' class='btn btn-info btn-block' onclick='update()' data-toggle='modal' data-target='#myModal'>Purchase</button>
+                <button type='button' class='btn btn-info btn-block' data-toggle='modal' $modal_target>Purchase</button>
             </div>
         </div>
     </div>
@@ -156,16 +157,16 @@
         <div class='modal-content bg-dark'>
 
             <div class=modal-header>
-                <h2>Success</h2>
+                <h2>Upload Bukti Bayar</h2>
                 <button type=button class='close' data-dismiss='modal'>&times;</button>
             </div>
 
             <div class='modal-body'>
-                <h5>Purchase has been made successfully! Thank you.</h5>
+                <h5>Upload Bukti Bayar untuk diverifikasi Admin</h5>
             </div>
 
             <div class='modal-footer'>
-            <button type='button' class='btn btn-primary' data-dismiss='modal'>OK</button>
+            <input type='file' name='bukti-bayar' accept='.png, .jpg, .jpeg, .pdf' oninput='update(this)'>
             </div>
         </div>
     </div>
@@ -201,20 +202,27 @@ echo "<center><a class='btn btn-primary' href='Home.php' data-dismiss='modal'>Re
                         });
                 }
 
-                function update()
+                function update(file)
                 {
+                    let form_data = new FormData();                  
+                    form_data.append('file', file.files[0]);
                     $.ajax({
-                            method: "POST",
-                            url: "resetcart.php",
+                            type: 'post',
+                            url: "upload_bukti.php",
+                            dataType: 'text',
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            data: form_data,
                             success: function(response)
                             {
-                                
+                                location.reload();
                             },
                             error: function(e)
                             {
-                                
+                                throw e
                             }
-                        });
+                    });
                 }
 </script>
 </div>

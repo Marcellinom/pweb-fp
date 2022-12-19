@@ -1,26 +1,16 @@
-<?php
-// Initialize the session
-session_start();
-
-// Check if the user is already logged in, if yes then redirect him to welcome page
-if (!isset($_SESSION['id'])) {
-    header("location: loginadmin.php");
-    exit;
-}
-
-include "is_admin.php";
-?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Game List</title>
+    <title>Verifikasi Pembayaran</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <script src="./js/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    
     <style type="text/css">
         .card {
             border-radius: 4px;
@@ -140,7 +130,7 @@ include "is_admin.php";
     </style>
 </head>
 
-<body background="" style="background-size: 2560px 1440px; background-position-x: center; font-family: Verdana, sans-serif; background-color: #141414;">
+<body body background="" style="background-size: 2560px 1440px; background-position-x: center; font-family: Verdana, sans-serif; background-color: #141414;">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark" style="display: flex; justify-content: center;">
         <a class="navbar-brand" href="admin.php" style="">
             <img src="stunt_logo.png" alt="logo" width="48" height="48" style="margin-left: 10px;" class="logo">
@@ -168,100 +158,76 @@ include "is_admin.php";
     </nav>
     <br>
     <div class="container">
-
-        <div class="row">
-            <div class="col text-white">
-                <h2>Game List</h2>
-            </div>
-
-            <div class="col">
-                <a href="insert.php" class="addbtn"><button class="btn btn-success ml-auto p-2">Add Game</button></a>
-            </div>
-
-
-        </div>
-        <br>
-
-        <div class="row">
-            <?php
-            include_once "connect.php";
-            
-            $querry = "SELECT * FROM games";
-
-            $result = $conn->query($querry);
-            if ($result->num_rows == 0) {
-                echo "<h5>Keranjang Kosong</h5>";
-            } else {
-                while ($gameRow = mysqli_fetch_assoc($result)) {
-                    include "connect.php";
-
-                    $cardID = $gameRow['id_game'];
-
-                    $getGameId = $gameRow['id_game'];
-
-                    $querry2 = "SELECT * FROM games WHERE id_game = $getGameId";
-
-                    $getGame = mysqli_query($conn, $querry2);
-
-                    $rowGame = mysqli_fetch_assoc($getGame);
-
-                    $hasil = $rowGame['nama'];
-                    $src = str_replace(' ', '', $hasil);
-                    $src = str_replace('-', '', $src);
-
-                    $gameID = $rowGame['id_game'];
-
-                    echo " <div class='col-lg-4 col-md-6 col-sm-6 col-6' id='$cardID'>
+    <div class="row">
+    <?php
+        $files = scandir("bukti_bayar");
+        include "connect.php";
+        foreach ($files as $file) {
+            if ($file == "." || $file == "..") continue;
+            $id = explode(".", $file)[0];
+            // fetch user data using id
+            $result = mysqli_query($conn, "SELECT * FROM user WHERE id=$id");
+            $row = mysqli_fetch_array($result);
+            $result2 = mysqli_query($conn, "SELECT SUM(g.harga) as total FROM games g JOIN usercart uc WHERE uc.id_game = g.id_game
+            AND uc.id_user = $id AND uc.status = 2");
+            $row2 = mysqli_fetch_array($result2);
+            // get total price
+            $total = $row2['total'];
+            // get name
+            $name = $row['username'];
+            echo " <div class='col-lg-4 col-md-6 col-sm-6 col-6' id=$id>
                 <div class='card card-1 bg-dark justify-content-center'>
-                        <img src=pictures/$src.jpg class='card-img-top'>
-                        <div class='card-body text-white'>
-                            
-                                <h5><b>{$rowGame['nama']}</b></h5>
-                                <h6>{$rowGame['developer']}</h6>
-                                <h6>{$rowGame['genre']}</h6>
-                            
+                        <img src=bukti_bayar/$file class='card-img-top'>
+                        <div class='card-body text-white'>     
+                                <h5><b>$name</b></h5>
                         </div>
 
                         <div class='footer text-right text-white' style='margin-right: 10px; margin-bottom: 10px;'>
-                        <h6>{$rowGame['harga']}</h6>
+                        <h6>IDR $total</h6>
                     </div>
                     <div class='footer text-right' style='margin-right: 20px; margin-bottom: 10px;'>
                         
                         <span>
-                            <a href='#' style='padding-left: 30px;font-size:24px;' class='deletebtn' onclick='deletegame($gameID, $cardID)'><i class='fas fa-trash'></i></a>
+                            <a href='#' style='padding-left: 30px;font-size:24px;' class='deletebtn' onclick='deletegame()'><i class='fas fa-trash'></i></a>
                         </span>
                     </div>
                 </div>
                 <br>
-                </div>";
-                }
-            }
-            ?>
-
-        </div>
+                </div>";   
+        }
+    ?>
+    </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
+    <script type="text/javascript">
+        $("#submita").click(function() {
 
-        function deletegame(idgame, idcard) {
+            var nama = $("#gamename").val();
+            var genre = $("#gamegenre").val();
+            var deskripsi = $("#gamedesc").val();
+            var developer = $("#gamedev").val();
+            var tanggal_release = $("#releasedate").val();
+            var harga = $("#price").val();
+
+
             $.ajax({
-                method: "POST",
-                url: "deleteadmin.php",
+                type: "POST",
+                url: "insertdb.php",
                 data: {
-                    idgame: idgame
-                },
-                success: function(response) {
-                    $("#" + idcard).remove();
-                },
-                error: function(e) {
-
+                    nama: nama,
+                    genre: genre,
+                    deskripsi: deskripsi,
+                    developer: developer,
+                    tanggal_release: tanggal_release,
+                    harga: harga
                 }
-            });
-            
-        }
+            }).done(function(res) {}).fail(function(e) {});
+
+        });
     </script>
 
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>

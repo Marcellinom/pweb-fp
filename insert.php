@@ -1,3 +1,7 @@
+<?php
+session_start();
+include "is_admin.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
 
