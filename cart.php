@@ -106,32 +106,25 @@
                 $gameID = $rowGame['id_game'];
                 $harga = $rowGame['harga'];
 
-                if ($rowGame['harga'] == "Free")
+                if ($rowGame['harga'] != "Free")
                 {
-                    $harga = "0";
-                    $harga = (int)$harga;
-                    $totalBayar = $totalBayar + 0;
+                    $totalBayar += (int)$rowGame['harga'];
                 }
-                else
-                {
-                    $harga = substr($harga,4);
-                    $harga = str_replace('.',"",$harga);
-                    $harga = (int)$harga;
-                    $totalBayar = $totalBayar + $harga;
-                }
+                $displayed_harga = $rowGame['harga'] == "Free" ? "Free" : "IDR ".number_format($rowGame['harga'],0,',','.');
+                $displayed_name = $rowGame['nama'];
 
                 echo " <div class='col-lg-4 col-md-6 col-sm-6 col-6'>
                 <div class='card card-1 bg-dark justify-content-center' id='$cardID'>
                         <img src=pictures/$src.jpg class='card-img-top'>
                         <div class='card-body'>
                             <b>
-                                <h3>{$rowGame['nama']}</h3>
-                                <h4>{$rowGame['harga']}</h4>
+                                <h3>{$displayed_name}</h3>
+                                <h4>$displayed_harga</h4>
                             </b>
                         </div>
 
                         <div class='card-footer'>
-                            <button type=button class='btn btn-danger' onclick='del($gameID,$cardID,$harga)'id='cartbutton'>Delete</button>
+                            <button type=button class='btn btn-danger' onclick='del($gameID,$cardID,\"$harga\")'id='cartbutton'>Delete</button>
                         </div>
                 </div>
                 <br>
@@ -187,7 +180,7 @@ echo "<center><a class='btn btn-primary' href='Home.php' data-dismiss='modal'>Re
 <script>
                 function del(idgame,idcard,harga) 
                 {
-                        $.ajax({
+                    $.ajax({
                             method: "POST",
                             url: "deleteatcart.php",
                             data: {
@@ -196,10 +189,9 @@ echo "<center><a class='btn btn-primary' href='Home.php' data-dismiss='modal'>Re
                             success: function(response)
                             {
                                 $("#"+ idcard).remove();
-                                
-                                var text = document.getElementById("bayartext").innerHTML;
-                                var num = text.substring(4);
-                                var result = parseInt(harga) - parseInt(num);
+                                var text = document.getElementById("bayartext").innerHTML.match(/\d+/)[0];
+                                harga = isNaN(parseInt(harga)) ? 0 : harga;
+                                var result = text - harga;
                                 document.getElementById("bayartext").innerHTML = "IDR " + result;
                             },
                             error: function(e)
