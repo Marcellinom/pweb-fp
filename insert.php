@@ -114,7 +114,7 @@ include "is_admin.php";
 
 <body body background="" style="background-size: 2560px 1440px; background-position-x: center; font-family: Verdana, sans-serif; background-color: #141414;">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark" style="display: flex; justify-content: center;">
-        <a class="navbar-brand" href="Home.php" style="">
+        <a class="navbar-brand" href="admin.php" style="">
             <img src="stunt_logo.png" alt="logo" width="48" height="48" style="margin-left: 10px;" class="logo">
             <img src="stunt_text.png" alt="text-logo" width="120" height="36" style="" class="logo">
         </a>

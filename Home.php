@@ -100,6 +100,7 @@
                     </li>
 
                 </ul>
+                <a href="receipt.php" class="btn btn-outline-success my-2"><img src="receipt.png" alt="cart" width="24" height="24"></a>
                 <a href="cart.php" class="btn btn-outline-success my-2"><img src="cart.png" alt="cart" width="24" height="24"></a>
                 <form class="form-inline justify-content-center" action="hasilsearch.php" method="post">
                     <input type="search" class="form-control mr-sm-2 ml-sm-2" placeholder="Search" aria-label="Search" name = "input">
